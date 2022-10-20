@@ -1,7 +1,9 @@
 package com.example.chat.di
 
 import com.example.domain.repository.Repository
+import com.example.domain.usecases.GetMessagesUseCase
 import com.example.domain.usecases.LoginUseCase
+import com.example.domain.usecases.SendMessageUseCase
 import com.example.domain.usecases.SignUpUseCase
 import dagger.Module
 import dagger.Provides
@@ -22,5 +24,15 @@ class DomainModule {
     @Provides
     fun provideSignUpUseCase(repository: Repository): SignUpUseCase {
         return SignUpUseCase(repository)
+    }
+
+    @Provides
+    fun provideSendMessageUseCase(repository: Repository): SendMessageUseCase {
+        return SendMessageUseCase(repository)
+    }
+
+    @Provides
+    fun provideGetMessagesUseCase(repository: Repository): GetMessagesUseCase {
+        return GetMessagesUseCase(repository)
     }
 }

@@ -1,16 +1,18 @@
 package com.example.chat.navigations
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.chat.ChatViewModel
 import com.example.chat.LoginViewModel
 import com.example.chat.screens.*
 
 @Composable
 fun Navigation() {
-    val loginViewModel: LoginViewModel = viewModel()
+    val loginViewModel = hiltViewModel<LoginViewModel>()
 
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.LoginScreen.route) {
@@ -25,13 +27,17 @@ fun Navigation() {
         composable(route = Screen.SignUpScreen.route) {
             SignUpScreen(navController = navController, loginViewModel = loginViewModel)
         }
-
+/*
         composable(route = Screen.ChatScreen.route) {
-            ChatScreen(navController = navController)
+            ChatScreen()
         }
 
         composable(route = Screen.ProfileScreen.route) {
-            ProfileScreen(navController = navController)
+            ProfileScreen()
+        }*/
+
+        composable(route = Screen.MainContentScreen.route) {
+            MainContent()
         }
 
     }

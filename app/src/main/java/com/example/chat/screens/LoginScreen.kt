@@ -49,7 +49,7 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
     val mContext = LocalContext.current
     loginViewModel.isLoginSuccessful.observe(LocalLifecycleOwner.current) {
         if (it == true && buttonClicked) {
-            navController.navigate(Screen.ChatScreen.route)
+            navController.navigate(Screen.MainContentScreen.route)
             Log.d("navigation", "login successful")
             buttonClicked = false
         } else if (buttonClicked) {

@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecases.LoginUseCase
 import com.example.domain.usecases.SignUpUseCase
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import javax.inject.Inject
@@ -24,10 +26,10 @@ class LoginViewModel @Inject constructor(
 
     suspend fun login(username: String, password: String) {
         val task = viewModelScope.async {
-            token = loginUseCase.execute(username, password)
+            uid = loginUseCase.execute(username, password)
         }
         task.await()
-        _isLoginSuccessful.value = token != null
+        _isLoginSuccessful.value = uid != null
     }
 
     suspend fun signUp(email: String, password: String, password2: String) {
@@ -40,7 +42,7 @@ class LoginViewModel @Inject constructor(
     }
 
     companion object {
-        var token: String? = null
+        var uid: String? = Firebase.auth.currentUser?.uid
     }
 
 }
