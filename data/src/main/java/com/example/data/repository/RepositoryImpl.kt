@@ -2,6 +2,7 @@ package com.example.data.repository
 
 import com.example.data.firebase.authentication.FirebaseAuthentication
 import com.example.data.firebase.database.chat.FirebaseChatDB
+import com.example.data.firebase.database.profile.FirebaseProfilesDB
 import com.example.domain.model.Message
 import com.example.domain.model.UserProfileData
 import com.example.domain.model.UserProfileStyles
@@ -9,7 +10,8 @@ import com.example.domain.repository.Repository
 
 class RepositoryImpl(
     private val firebaseAuthentication: FirebaseAuthentication,
-    private val firebaseChatDB: FirebaseChatDB
+    private val firebaseChatDB: FirebaseChatDB,
+    private val firebaseProfilesDB: FirebaseProfilesDB
     ): Repository {
 
     override suspend fun login(email: String, password: String): String? {
@@ -20,12 +22,12 @@ class RepositoryImpl(
         return firebaseAuthentication.signUp(email, password)
     }
 
-    override suspend fun getProfileData(uid: String): UserProfileData {
-        TODO("Not yet implemented")
+    override suspend fun getProfileData(uid: String): UserProfileData? {
+        return firebaseProfilesDB.getProfileData(uid)
     }
 
     override suspend fun saveProfileData(userProfileData: UserProfileData) {
-        TODO("Not yet implemented")
+        firebaseProfilesDB.saveProfileData(userProfileData)
     }
 
     override suspend fun getProfileStyles(uid: String): UserProfileStyles {

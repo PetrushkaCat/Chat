@@ -8,10 +8,10 @@ interface Repository {
     suspend fun login(email: String, password: String): String?
     suspend fun signUp(email: String, password: String): Boolean
 
-    suspend fun getProfileData(uid: String): UserProfileData
+    suspend fun getProfileData(uid: String): UserProfileData?
     suspend fun saveProfileData(userProfileData: UserProfileData)
 
-    suspend fun getProfileStyles(uid: String): UserProfileStyles
+    suspend fun getProfileStyles(uid: String): UserProfileStyles?
     suspend fun saveProfileStyles(userProfileStyles: UserProfileStyles)
 
     suspend fun sendMessage(message: Message)

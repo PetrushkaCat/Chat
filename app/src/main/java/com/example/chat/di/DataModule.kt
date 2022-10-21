@@ -2,6 +2,7 @@ package com.example.chat.di
 
 import com.example.data.firebase.authentication.FirebaseAuthentication
 import com.example.data.firebase.database.chat.FirebaseChatDB
+import com.example.data.firebase.database.profile.FirebaseProfilesDB
 import com.example.data.repository.RepositoryImpl
 import com.example.domain.repository.Repository
 import dagger.Module
@@ -17,8 +18,11 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideRepository(firebaseAuthentication: FirebaseAuthentication, firebaseChatDB: FirebaseChatDB): Repository {
-        return RepositoryImpl(firebaseAuthentication, firebaseChatDB)
+    fun provideRepository(firebaseAuthentication: FirebaseAuthentication,
+                          firebaseChatDB: FirebaseChatDB,
+                          firebaseProfilesDB: FirebaseProfilesDB
+    ): Repository {
+        return RepositoryImpl(firebaseAuthentication, firebaseChatDB, firebaseProfilesDB)
     }
 
     @Provides
@@ -31,5 +35,11 @@ class DataModule {
     @Singleton
     fun provideFirebaseChatDB(): FirebaseChatDB {
         return FirebaseChatDB()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseProfileDB(): FirebaseProfilesDB {
+        return FirebaseProfilesDB()
     }
 }

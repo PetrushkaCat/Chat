@@ -5,9 +5,11 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.Message
+import com.example.domain.model.UserProfileData
 import com.example.domain.usecases.GetMessagesUseCase
 import com.example.domain.usecases.SendMessageUseCase
 import com.google.firebase.database.DataSnapshot
@@ -29,10 +31,12 @@ class ChatViewModel @Inject constructor(
 
     var messages by mutableStateOf(mapOf<String, Message>())
 
+    private val userData = MutableLiveData<UserProfileData>()
+
     suspend fun sendMessage(message: String) {
         val uid = LoginViewModel.uid ?: ""
-        val image = ""
-        val username = "username"
+        val image = userData.value?.imageStr ?: ""
+        val username = userData.value?.username ?: ""
         val messageInstance = Message(uid, message, image, username)
 
         viewModelScope.launch {
@@ -42,9 +46,9 @@ class ChatViewModel @Inject constructor(
 
     init {
         // Read from the database
-        val myRef = Firebase.database.getReference("chat")
+        val chatRef = Firebase.database.getReference("chat")
 
-        myRef.orderByKey().addValueEventListener(object: ValueEventListener {
+        chatRef.orderByKey().addValueEventListener(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 Log.d(TAG, "value changed")
@@ -59,5 +63,24 @@ class ChatViewModel @Inject constructor(
             }
 
         })
+
+        val userRef = Firebase.database.getReference("profile/${LoginViewModel.uid ?: ""}/data")
+
+        userRef.orderByKey().addValueEventListener(object: ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d(TAG, "value changed")
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                userData.value = snapshot.getValue<UserProfileData>()
+                Log.d(TAG, "Value is: " + messages)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "Failed to read value.", error.toException())
+            }
+
+        })
+
     }
 }
