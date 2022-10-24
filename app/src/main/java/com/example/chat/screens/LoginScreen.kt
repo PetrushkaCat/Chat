@@ -9,7 +9,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,11 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import com.example.chat.LoginViewModel
-import com.example.chat.MainActivity
-import com.example.chat.navigations.Navigation
 import com.example.chat.navigations.Screen
 import kotlinx.coroutines.*
 
@@ -44,7 +41,7 @@ fun LoginPreview() {
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
 
-    var buttonClicked = false
+    var buttonClicked by rememberSaveable { mutableStateOf(false) }
 
     val mContext = LocalContext.current
     loginViewModel.isLoginSuccessful.observe(LocalLifecycleOwner.current) {
@@ -83,8 +80,8 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val email = remember { mutableStateOf(TextFieldValue()) }
-        val password = remember { mutableStateOf(TextFieldValue()) }
+        val email = rememberSaveable { mutableStateOf("") }
+        val password = rememberSaveable { mutableStateOf("") }
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -112,7 +109,7 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
             Button(
                 onClick = {
                     coroutineScope.launch {
-                         loginViewModel.login(email.value.text, password.value.text)
+                         loginViewModel.login(email.value, password.value)
                     }
                     buttonClicked = true
                 },

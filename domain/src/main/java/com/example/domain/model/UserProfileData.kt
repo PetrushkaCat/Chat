@@ -12,5 +12,5 @@ class UserProfileData(
 
     ) {
 
-    constructor(): this (uid = "")
+    constructor(): this (uid = null)
 }

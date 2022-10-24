@@ -37,8 +37,7 @@ class ProfileViewModel @Inject constructor(
 
 ): ViewModel() {
 
-    var profileData by mutableStateOf(UserProfileData())
-        private set
+    val profileData = mutableStateOf(UserProfileData())
 
     private val _profileStyles = MutableLiveData<UserProfileStyles>()
     val profileStyles: LiveData<UserProfileStyles> = _profileStyles
@@ -53,8 +52,7 @@ class ProfileViewModel @Inject constructor(
                 Log.d(ContentValues.TAG, "value changed")
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                profileData = snapshot.getValue<UserProfileData>() ?: UserProfileData()
-                Log.d(ContentValues.TAG, "Value is: " + "/"+profileData.imageStr +"/")
+                profileData.value = snapshot.getValue<UserProfileData>() ?: UserProfileData()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -66,9 +64,9 @@ class ProfileViewModel @Inject constructor(
     }
 
     suspend fun saveProfileData(userProfileData: UserProfileData) {
-        if (userProfileData.firstName == "") userProfileData.firstName = profileData.firstName
-        if (userProfileData.lastName == "") userProfileData.lastName = profileData.lastName
-        if (userProfileData.username == "") userProfileData.username = profileData.username
+        if (userProfileData.firstName == "") userProfileData.firstName = profileData.value.firstName
+        if (userProfileData.lastName == "") userProfileData.lastName = profileData.value.lastName
+        if (userProfileData.username == "") userProfileData.username = profileData.value.username
 
         viewModelScope.launch {
             saveProfileDataUseCase.execute(userProfileData)

@@ -11,6 +11,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,7 +53,7 @@ fun ForgotPasswordScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val email = remember { mutableStateOf(TextFieldValue()) }
+        val email = rememberSaveable { mutableStateOf("") }
 
         Text(text = "We will send you password recovery email", style = TextStyle(fontSize = 30.sp, fontFamily = FontFamily.Default, textAlign = TextAlign.Center))
 

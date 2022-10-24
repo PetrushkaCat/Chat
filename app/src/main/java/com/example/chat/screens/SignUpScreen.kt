@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,7 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignUpScreen(loginViewModel: LoginViewModel, navController: NavController) {
 
-    var buttonClicked = false
+    var buttonClicked by rememberSaveable { mutableStateOf(false) }
 
     val mContext = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -78,9 +79,9 @@ fun SignUpScreen(loginViewModel: LoginViewModel, navController: NavController) {
     ) {
 
 
-        val email = remember { mutableStateOf(TextFieldValue()) }
-        val password = remember { mutableStateOf(TextFieldValue()) }
-        val password2 = remember { mutableStateOf(TextFieldValue()) }
+        val email = rememberSaveable { mutableStateOf("") }
+        val password = rememberSaveable { mutableStateOf("") }
+        val password2 = rememberSaveable { mutableStateOf("") }
 
         val coroutineScope = rememberCoroutineScope()
 
@@ -114,9 +115,9 @@ fun SignUpScreen(loginViewModel: LoginViewModel, navController: NavController) {
                 onClick = {
                     coroutineScope.launch {
                     (loginViewModel.signUp(
-                                email.value.text,
-                                password.value.text,
-                                password2.value.text))
+                                email.value,
+                                password.value,
+                                password2.value))
                     }
                     buttonClicked = true
                 },

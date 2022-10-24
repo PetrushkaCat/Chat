@@ -1,38 +1,46 @@
 package com.example.chat.screens
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity
-import android.graphics.BitmapFactory
-import android.util.Base64
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.chat.ProfileViewModel
-import com.example.chat.navigations.MainScreens
+import com.example.chat.convert
+import com.example.chat.getBitmap
 import com.example.chat.ui.theme.Purple40
 import com.example.domain.model.UserProfileData
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 @Composable
@@ -40,18 +48,39 @@ fun ChangeProfilesDataScreen(uid: String, navController: NavController) {
 
     val scope = rememberCoroutineScope()
     val profileViewModel = hiltViewModel<ProfileViewModel>()
+    val context = LocalContext.current
 
-    val userData = profileViewModel.profileData
+    val userData by profileViewModel.profileData
 
-    val username = remember { mutableStateOf(TextFieldValue()) }
-    val firstName = remember { mutableStateOf(TextFieldValue()) }
-    val lastName = remember { mutableStateOf(TextFieldValue()) }
+    val username = rememberSaveable { mutableStateOf("") }
+    val firstName = rememberSaveable { mutableStateOf("") }
+    val lastName = rememberSaveable { mutableStateOf("") }
 
-    LaunchedEffect(key1 = uid) {
-        scope.launch {
-            profileViewModel.loadProfile(uid)
+    var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    //cant just rememberSaveable bitmap... it's too large and crushes app at onStop()
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+
+    val launcher = rememberLauncherForActivityResult(contract =
+    ActivityResultContracts.GetContent()) { uri: Uri? ->
+        imageUri = uri
+    }
+
+    var dataLoaded by remember { mutableStateOf(0) }
+
+
+    LaunchedEffect(true) {
+        profileViewModel.loadProfile(uid)
+    }
+
+    //somehow without "if" it makes loop...
+    if (dataLoaded < 2) {
+        bitmap.value = getBitmap(userData.imageStr)
+        if (userData.uid != null) {
+            Log.d("image", "/${userData.uid}/")
+            dataLoaded++
         }
     }
+
 
     Column(Modifier
         .fillMaxSize()
@@ -60,32 +89,46 @@ fun ChangeProfilesDataScreen(uid: String, navController: NavController) {
         verticalArrangement = Arrangement.SpaceBetween) {
 
         Row() {
-
-            var _imageStr = userData.imageStr ?: ""
-            if(_imageStr == "") _imageStr = getGoogleLogo()
-            val imageStrDecoded = Base64.decode(_imageStr, Base64.DEFAULT)
-            val image = BitmapFactory.decodeByteArray(imageStrDecoded, 0, imageStrDecoded.size)
-
             val rowModifier = Modifier.padding(0.dp, 4.dp, 0.dp, 0.dp)
 
             Column(Modifier
                 .fillMaxWidth()
                 .padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(modifier = rowModifier) {
-                    Image(bitmap = image.asImageBitmap(), contentDescription = null,
+                    Image(bitmap = bitmap.value!!.asImageBitmap(),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(100.dp)
-                            .border(1.dp, Color.Gray, CircleShape)
+                            .border(2.dp, Color.Gray, CircleShape)
+                            .clickable {
+                                if (ContextCompat.checkSelfPermission(context, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    requestPermissions(context as Activity, arrayOf(READ_EXTERNAL_STORAGE), 10);
+                                }
+                                else {
+                                    launcher.launch("image/*")
+                                }
+                            }
+                            .clip(CircleShape)
                     )
                 }
                 Row(modifier = rowModifier) {
-                    TextField(value = username.value, onValueChange = { username.value = it}, label = {Text(text = userData.username ?: "username")})
+                    TextField(value = username.value,
+                        onValueChange = { username.value = it },
+                        label = { Text(text = userData.username ?: "username") },
+                        singleLine = true)
                 }
                 Row(modifier = rowModifier) {
-                    TextField(value = firstName.value, onValueChange = {  firstName.value = it}, label = {Text(text = userData.firstName ?: "first name")})
+                    TextField(value = firstName.value,
+                        onValueChange = { firstName.value = it },
+                        label = { Text(text = userData.firstName ?: "first name") },
+                        singleLine = true)
                 }
                 Row(modifier = rowModifier) {
-                    TextField(value = lastName.value, onValueChange = { lastName.value = it }, label = {Text(text = userData.lastName ?: "last name")})
+                    TextField(value = lastName.value,
+                        onValueChange = { lastName.value = it },
+                        label = { Text(text = userData.lastName ?: "last name") },
+                        singleLine = true)
                 }
             }
         }
@@ -106,8 +149,11 @@ fun ChangeProfilesDataScreen(uid: String, navController: NavController) {
             Button(onClick = {
                 scope.launch {
                     profileViewModel.saveProfileData(userProfileData = UserProfileData(
-                        uid, firstName.value.text, lastName.value.text, username.value.text))
-
+                        uid,
+                        firstName.value,
+                        lastName.value,
+                        username.value,
+                        convert(bitmap.value!!)))
                     navController.popBackStack()
                 }
             }, content = { Text(text = "Save") },
@@ -115,5 +161,19 @@ fun ChangeProfilesDataScreen(uid: String, navController: NavController) {
                 colors = ButtonDefaults.buttonColors(backgroundColor = Purple40,
                     contentColor = Color.White))
         }
+    }
+
+    //it makes loop too, but because of this loop, we can remember the picture user chose
+    imageUri?.let {
+        if (Build.VERSION.SDK_INT < 28) {
+            bitmap.value = MediaStore.Images
+                .Media.getBitmap(context.contentResolver, it)
+
+        } else {
+            val source = ImageDecoder
+                .createSource(context.contentResolver, it)
+            bitmap.value = ImageDecoder.decodeBitmap(source)
+        }
+        Log.d("image", "image changed")
     }
 }

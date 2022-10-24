@@ -4,7 +4,7 @@ data class Message(
     var uid: String = "",
     var message: String = "",
     var icon: String? = null,
-    var username: String = "Dave") {
+    var username: String = "") {
 
     constructor() :this("")
 }

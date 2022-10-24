@@ -51,11 +51,10 @@ class ChatViewModel @Inject constructor(
         chatRef.orderByKey().addValueEventListener(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d(TAG, "value changed")
+
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 messages = snapshot.getValue<Map<String, Message>>() ?: emptyMap()
-                Log.d(TAG, "Value is: " + messages)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -73,7 +72,6 @@ class ChatViewModel @Inject constructor(
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 userData.value = snapshot.getValue<UserProfileData>()
-                Log.d(TAG, "Value is: " + messages)
             }
 
             override fun onCancelled(error: DatabaseError) {
