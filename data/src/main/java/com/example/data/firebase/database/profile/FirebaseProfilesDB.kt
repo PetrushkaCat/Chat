@@ -2,9 +2,7 @@ package com.example.data.firebase.database.profile
 
 import android.content.ContentValues
 import android.util.Log
-import com.example.domain.model.Message
 import com.example.domain.model.UserProfileData
-import com.example.domain.model.UserProfileStyles
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

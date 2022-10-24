@@ -23,9 +23,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.chat.ProfileViewModel
+import com.example.chat.viewmodels.ProfileViewModel
 import com.example.chat.getBitmap
 import com.example.chat.navigations.MainScreens
 import com.example.chat.ui.theme.Purple40
@@ -112,13 +113,19 @@ fun ProfileContentScreen(uid: String) {
             )
         }
         Row(modifier = rowModifier) {
-            TextField(value = profileData.username ?: "", onValueChange = { }, readOnly = true, label = {Text(text = "Username")})
+            TextField(value = profileData.username ?: "", onValueChange = { }, readOnly = true,
+                textStyle = TextStyle(fontSize = 20.sp),
+                label = {Text(text = "Username", style = TextStyle(fontSize = 15.sp))})
         }
         Row(modifier = rowModifier) {
-            TextField(value = profileData.firstName ?: "", onValueChange = { }, readOnly = true, label = {Text(text = "First name")})
+            TextField(value = profileData.firstName ?: "", onValueChange = { }, readOnly = true,
+                textStyle = TextStyle(fontSize = 20.sp),
+                label = {Text(text = "First name", style = TextStyle(fontSize = 15.sp))})
         }
         Row(modifier = rowModifier) {
-            TextField(value = profileData.lastName ?: "", onValueChange = { }, readOnly = true, label = {Text(text = "Last name")})
+            TextField(value = profileData.lastName ?: "", onValueChange = { }, readOnly = true,
+                textStyle = TextStyle(fontSize = 20.sp),
+                label = {Text(text = "Last name", style = TextStyle(fontSize = 15.sp))})
         }
     }
 }

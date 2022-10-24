@@ -1,4 +1,4 @@
-package com.example.chat
+package com.example.chat.viewmodels
 
 import android.content.ContentValues.TAG
 import android.util.Log
@@ -19,7 +19,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

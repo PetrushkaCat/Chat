@@ -1,6 +1,5 @@
 package com.example.chat.screens
 
-
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -24,9 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
-import com.example.chat.LoginViewModel
+import com.example.chat.viewmodels.LoginViewModel
 import com.example.chat.navigations.Screen
 import kotlinx.coroutines.*
 
@@ -44,6 +42,7 @@ fun LoginScreen(loginViewModel: LoginViewModel, navController: NavController) {
     var buttonClicked by rememberSaveable { mutableStateOf(false) }
 
     val mContext = LocalContext.current
+
     loginViewModel.isLoginSuccessful.observe(LocalLifecycleOwner.current) {
         if (it == true && buttonClicked) {
             navController.navigate(Screen.MainContentScreen.route)

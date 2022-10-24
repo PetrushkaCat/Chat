@@ -1,10 +1,8 @@
-package com.example.chat
+package com.example.chat.viewmodels
 
 import android.content.ContentValues
 import android.util.Log
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,9 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.model.UserProfileData
 import com.example.domain.model.UserProfileStyles
 import com.example.domain.usecases.GetProfileDataUseCase
-import com.example.domain.usecases.GetProfileStylesUseCase
 import com.example.domain.usecases.SaveProfileDataUseCase
-import com.example.domain.usecases.SaveProfileStylesUseCase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -22,9 +18,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

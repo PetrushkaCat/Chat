@@ -35,12 +35,11 @@ import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.chat.ProfileViewModel
+import com.example.chat.viewmodels.ProfileViewModel
 import com.example.chat.convert
 import com.example.chat.getBitmap
 import com.example.chat.ui.theme.Purple40
 import com.example.domain.model.UserProfileData
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 @Composable
@@ -69,7 +68,9 @@ fun ChangeProfilesDataScreen(uid: String, navController: NavController) {
 
 
     LaunchedEffect(true) {
-        profileViewModel.loadProfile(uid)
+        scope.launch {
+            profileViewModel.loadProfile(uid)
+        }
     }
 
     //somehow without "if" it makes loop...

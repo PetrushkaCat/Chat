@@ -1,5 +1,7 @@
-package com.example.chat
+package com.example.chat.viewmodels
 
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,20 +15,24 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private var loginUseCase: LoginUseCase,
     private var signUpUseCase: SignUpUseCase,
-    private var saveProfileDataUseCase: SaveProfileDataUseCase
-    ): ViewModel() {
+    private var saveProfileDataUseCase: SaveProfileDataUseCase,
+) : ViewModel() {
 
     private val _isLoginSuccessful = MutableLiveData<Boolean>()
     val isLoginSuccessful: LiveData<Boolean> = _isLoginSuccessful
 
     private val _isSignUpSuccessful = MutableLiveData<Boolean>()
     val isSignUpSuccessful: LiveData<Boolean> = _isSignUpSuccessful
+
+    private val _isEmailSent = MutableLiveData<Boolean>()
+    val isEmailSent: LiveData<Boolean> = _isEmailSent
 
     suspend fun login(username: String, password: String) {
         val task = viewModelScope.async {
@@ -43,10 +49,33 @@ class LoginViewModel @Inject constructor(
         }
         task.await()
         _isSignUpSuccessful.value = isSuccess
-        if(isSuccess) {
+        if (isSuccess) {
             viewModelScope.launch {
                 saveProfileDataUseCase.execute(UserProfileData(uid = Firebase.auth.currentUser?.uid))
             }
+        }
+    }
+
+    suspend fun sendResetPasswordEmail(emailAddress: String) {
+        if (emailAddress == "") return
+        var isSuccess = false
+
+        try {
+            val task = Firebase.auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "Email sent.")
+                        isSuccess = true
+                    } else {
+                        Log.d(TAG, "Email not sent.")
+                        isSuccess = false
+                    }
+                }
+            task.await()
+            _isEmailSent.value = isSuccess
+        } catch(e: Exception) {
+            e.printStackTrace()
+            _isEmailSent.value = false
         }
     }
 

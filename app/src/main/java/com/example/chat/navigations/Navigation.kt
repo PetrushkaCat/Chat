@@ -2,15 +2,11 @@ package com.example.chat.navigations
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.chat.ChatViewModel
-import com.example.chat.LoginViewModel
+import com.example.chat.viewmodels.LoginViewModel
 import com.example.chat.screens.*
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 @Composable
 fun Navigation() {

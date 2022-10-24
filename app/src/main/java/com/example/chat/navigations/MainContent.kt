@@ -16,7 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.chat.LoginViewModel
+import com.example.chat.viewmodels.LoginViewModel
 import com.example.chat.screens.*
 import com.example.chat.ui.theme.Purple40
 import com.google.accompanist.pager.*

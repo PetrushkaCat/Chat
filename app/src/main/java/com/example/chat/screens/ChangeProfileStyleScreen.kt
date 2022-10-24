@@ -6,5 +6,5 @@ import androidx.navigation.NavController
 
 @Composable
 fun ChangeProfileStyleScreen(uid: String, navController: NavController) {
-    Text("ChangeStyle")
+    Text("ChangeStyle (not yet implemented)")
 }

@@ -1,7 +1,5 @@
 package com.example.chat.screens
 
-import android.graphics.BitmapFactory
-import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,48 +10,30 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.chat.ChatViewModel
-import com.example.chat.LoginViewModel
-import com.example.chat.ProfileViewModel
+import com.example.chat.viewmodels.ChatViewModel
+import com.example.chat.viewmodels.LoginViewModel
 import com.example.chat.getBitmap
 import com.example.chat.navigations.MainScreens
-import com.example.chat.navigations.Screen
 import com.example.chat.ui.theme.Purple40
-import com.example.chat.ui.theme.PurpleGrey40
-import com.example.data.repository.RepositoryImpl
-import com.example.domain.usecases.GetMessagesUseCase
-import com.example.domain.usecases.SendMessageUseCase
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,8 +44,17 @@ fun ChatScreen(navController: NavController) {
 
     val messages = chatViewModel.messages.toList().sortedBy { it.first }
     val lazyListState: LazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
     var showIcon = false;
+
+    if(messages.isNotEmpty()) {
+        LaunchedEffect(true) {
+            scope.launch {
+                lazyListState.animateScrollToItem(messages.size - 1)
+            }
+        }
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -100,9 +89,7 @@ fun ChatScreen(navController: NavController) {
         val messageText = rememberSaveable { mutableStateOf("") }
         val sendMessageIcon = rememberVectorPainter(image = Icons.Default.Send)
 
-        val scope = rememberCoroutineScope()
         val focusManager = LocalFocusManager.current
-
 
         TextField(
             value = messageText.value,
@@ -173,7 +160,6 @@ fun Message(
                 MessageBubble(bubbleColor = bubbleColor,
                     username = username,
                     text = text)
-
             }
         }
     } else {
