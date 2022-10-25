@@ -1,4 +1,4 @@
-package com.example.chat.viewmodels
+package com.example.chat.screens.main.profile
 
 import android.content.ContentValues
 import android.util.Log

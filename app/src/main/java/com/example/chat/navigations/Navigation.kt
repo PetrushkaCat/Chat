@@ -5,8 +5,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.chat.viewmodels.LoginViewModel
-import com.example.chat.screens.*
+import com.example.chat.screens.login.LoginViewModel
+import com.example.chat.screens.login.ForgotPasswordScreen
+import com.example.chat.screens.login.LoginScreen
+import com.example.chat.screens.login.SignUpScreen
 
 @Composable
 fun Navigation() {

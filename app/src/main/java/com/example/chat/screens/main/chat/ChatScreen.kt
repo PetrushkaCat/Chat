@@ -1,4 +1,4 @@
-package com.example.chat.screens
+package com.example.chat.screens.main.chat
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -29,8 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.chat.viewmodels.ChatViewModel
-import com.example.chat.viewmodels.LoginViewModel
+import com.example.chat.screens.login.LoginViewModel
 import com.example.chat.getBitmap
 import com.example.chat.navigations.MainScreens
 import com.example.chat.ui.theme.Purple40
@@ -45,8 +45,6 @@ fun ChatScreen(navController: NavController) {
     val messages = chatViewModel.messages.toList().sortedBy { it.first }
     val lazyListState: LazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
-
-    var showIcon = false;
 
     if(messages.isNotEmpty()) {
         LaunchedEffect(true) {
@@ -72,7 +70,7 @@ fun ChatScreen(navController: NavController) {
                 count = messages.size
             ) { item ->
                 Box {
-                    showIcon = !(item > 0 && messages[item].second.uid == messages[item - 1].second.uid)
+                    val showIcon = !(item > 0 && messages[item].second.uid == messages[item - 1].second.uid)
 
                     Message(uid = messages[item].second.uid,
                         text = messages[item].second.message,
@@ -110,13 +108,15 @@ fun ChatScreen(navController: NavController) {
                 )
             },
             modifier = Modifier
-                .border(width = 1.dp, color = Color.DarkGray, shape = RoundedCornerShape(20.dp))
+                .border(width = 1.dp, color = Color.DarkGray,
+                    shape = RoundedCornerShape(20.dp))
                 .fillMaxWidth()
-                .padding(2.dp),
+                .padding(4.dp, 2.dp),
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
+                unfocusedIndicatorColor = Color.Transparent,
+                containerColor = Color.White
             )
 
         )
@@ -139,27 +139,28 @@ fun Message(
 
     if (uid != LoginViewModel.uid) {
         Box {
-            Row {
-
+            Row(modifier = Modifier.fillMaxWidth()) {
                 if (showIcon) {
                     Image(bitmap = image.asImageBitmap(),
                         contentDescription = "avatar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(50.dp)
-                            .padding(start = 2.dp, top = 2.dp, bottom = 2.dp)
+                            .size(40.dp)
+                            .padding(4.dp)
                             .align(Alignment.Top)
                             .clickable {
                                 navController.navigate(MainScreens.ProfileContent.withUid(uid))
                             }
                             .clip(CircleShape))
                 } else {
-                    Box(modifier = Modifier.size(50.dp))
+                    Box(modifier = Modifier.size(40.dp, 0.dp))
                 }
 
                 MessageBubble(bubbleColor = bubbleColor,
                     username = username,
-                    text = text)
+                    text = text,
+                    showName = showIcon,
+                    onLeft = true)
             }
         }
     } else {
@@ -167,26 +168,28 @@ fun Message(
             Row(horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()) {
 
-                bubbleColor = Color(0xFFE7F0DB)
+                bubbleColor = Color(0xFFDBEFF0)
 
                 MessageBubble(bubbleColor = bubbleColor,
                     username = username,
-                    text = text)
+                    text = text,
+                    showName = showIcon,
+                    onLeft = false)
 
                 if (showIcon) {
                     Image(bitmap = image.asImageBitmap(),
                         contentDescription = "avatar",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(50.dp)
-                            .padding(start = 2.dp, top = 2.dp, bottom = 2.dp)
+                            .size(40.dp)
+                            .padding(4.dp)
                             .align(Alignment.Top)
                             .clickable {
                                 navController.navigate(MainScreens.ProfileContent.withUid(uid))
                             }
                             .clip(CircleShape))
                 } else {
-                    Box(modifier = Modifier.size(50.dp))
+                    Box(modifier = Modifier.size(40.dp, 0.dp))
                 }
 
             }
@@ -196,18 +199,34 @@ fun Message(
 }
 
 @Composable
-fun MessageBubble(bubbleColor: Color, username: String, text: String) {
-    Column(modifier = Modifier
-        .background(color = bubbleColor,
-            shape = RoundedCornerShape(6.dp))
-        .padding(6.dp)
-        .defaultMinSize(100.dp)) {
+fun MessageBubble(bubbleColor: Color, username: String,
+                  text: String, showName: Boolean, onLeft: Boolean) {
 
-        Text(text = username, style = TextStyle(color = Purple40, fontSize = 15.sp))
+    val columnModifier: Modifier = if(onLeft) {
+        Modifier
+            .background(color = bubbleColor, shape = RoundedCornerShape(0.dp, 10.dp, 10.dp, 10.dp))
+            .defaultMinSize(100.dp)
+            .padding(6.dp)
+    } else {
+        Modifier
+            .background(color = bubbleColor, shape = RoundedCornerShape(10.dp, 0.dp, 10.dp, 10.dp))
+            .defaultMinSize(100.dp)
+            .padding(6.dp)
+    }
+
+    Column(modifier = columnModifier
+    ) {
+
+        if(showName) {
+            Text(
+                text = username,
+                style = TextStyle(color = Purple40, fontSize = 15.sp)
+            )
+        }
 
         Text(
             text = text,
-            style = TextStyle(fontFamily = FontFamily.Default, fontSize = 20.sp),
+            style = TextStyle(fontSize = 16.sp),
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.example.chat.viewmodels
+package com.example.chat.screens.login
 
 import android.content.ContentValues.TAG
 import android.util.Log

@@ -1,4 +1,4 @@
-package com.example.chat.viewmodels
+package com.example.chat.screens.main.chat
 
 import android.content.ContentValues.TAG
 import android.util.Log
@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chat.screens.login.LoginViewModel
 import com.example.domain.model.Message
 import com.example.domain.model.UserProfileData
 import com.example.domain.usecases.GetMessagesUseCase

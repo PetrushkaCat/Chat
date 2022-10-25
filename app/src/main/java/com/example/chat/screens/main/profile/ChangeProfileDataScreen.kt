@@ -1,4 +1,4 @@
-package com.example.chat.screens
+package com.example.chat.screens.main.profile
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity
@@ -35,7 +35,6 @@ import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.chat.viewmodels.ProfileViewModel
 import com.example.chat.convert
 import com.example.chat.getBitmap
 import com.example.chat.ui.theme.Purple40

@@ -16,8 +16,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.chat.viewmodels.LoginViewModel
-import com.example.chat.screens.*
+import com.example.chat.screens.login.LoginViewModel
+import com.example.chat.screens.main.chat.ChatScreen
+import com.example.chat.screens.main.profile.ChangeProfileStyleScreen
+import com.example.chat.screens.main.profile.ChangeProfilesDataScreen
+import com.example.chat.screens.main.profile.ProfileContentScreen
+import com.example.chat.screens.main.profile.ProfileScreen
 import com.example.chat.ui.theme.Purple40
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
@@ -39,7 +43,7 @@ fun MainContent() {
     val tabs = listOf(
         TabItem(title = "Chat",icons= Icons.Default.Chat, screens = { ChatScreen(navController) }),
         TabItem(title = "Profile",icons= Icons.Default.AccountCircle,
-            screens = { ProfileScreen(uid = LoginViewModel.uid ?: "", navController)}))
+            screens = { ProfileScreen(uid = LoginViewModel.uid ?: "", navController) }))
 
     NavHost(navController = navController, startDestination = MainScreens.Main.route) {
         composable(route = MainScreens.Main.route) {

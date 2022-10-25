@@ -1,4 +1,4 @@
-package com.example.chat.screens
+package com.example.chat.screens.main.profile
 
 import android.app.Activity
 import androidx.compose.foundation.Image
@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.chat.viewmodels.ProfileViewModel
 import com.example.chat.getBitmap
 import com.example.chat.navigations.MainScreens
 import com.example.chat.ui.theme.Purple40
@@ -97,12 +97,14 @@ fun ProfileContentScreen(uid: String) {
 
     val image = getBitmap(profileData.imageStr)
 
-    val rowModifier = Modifier.padding(0.dp, 4.dp, 0.dp, 0.dp)
 
     Column(Modifier
-        .fillMaxWidth()
-        .padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(modifier = rowModifier) {
+        .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+        Row() {
             Image(bitmap = image.asImageBitmap(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
@@ -112,20 +114,34 @@ fun ProfileContentScreen(uid: String) {
                     .clip(CircleShape)
             )
         }
-        Row(modifier = rowModifier) {
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row() {
             TextField(value = profileData.username ?: "", onValueChange = { }, readOnly = true,
-                textStyle = TextStyle(fontSize = 20.sp),
-                label = {Text(text = "Username", style = TextStyle(fontSize = 15.sp))})
+                textStyle = TextStyle(fontSize = 17.sp),
+                label = {Text(text = "Username", style = TextStyle(fontSize = 15.sp))},
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0xFFF0EDED)))
         }
-        Row(modifier = rowModifier) {
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Row() {
             TextField(value = profileData.firstName ?: "", onValueChange = { }, readOnly = true,
-                textStyle = TextStyle(fontSize = 20.sp),
-                label = {Text(text = "First name", style = TextStyle(fontSize = 15.sp))})
+                textStyle = TextStyle(fontSize = 17.sp),
+                label = {Text(text = "First name", style = TextStyle(fontSize = 15.sp))},
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0xFFF0EDED))
+            )
         }
-        Row(modifier = rowModifier) {
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Row() {
             TextField(value = profileData.lastName ?: "", onValueChange = { }, readOnly = true,
-                textStyle = TextStyle(fontSize = 20.sp),
-                label = {Text(text = "Last name", style = TextStyle(fontSize = 15.sp))})
+                textStyle = TextStyle(fontSize = 17.sp),
+                label = {Text(text = "Last name", style = TextStyle(fontSize = 15.sp))},
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = Color(0xFFF0EDED))
+            )
         }
     }
 }

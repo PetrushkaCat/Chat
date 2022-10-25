@@ -1,4 +1,4 @@
-package com.example.chat.screens
+package com.example.chat.screens.login
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.chat.navigations.Screen
-import com.example.chat.viewmodels.LoginViewModel
+import com.example.chat.screens.login.LoginViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
